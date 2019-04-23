@@ -119,16 +119,6 @@ tuned_parameters = {
     "loss" : [ 'ls', 'la' ]
 }
 
-n_est = 300
-
-tuned_parameters = {
-    "n_estimators": [ n_est ],
-    "max_depth" : [ 4 ],
-    "learning_rate": [ 0.01 ],
-    "min_samples_split" : [ 1 ],
-    "loss" : [ 'ls', 'lad' ]
-}
-
 gbr = ensemble.GradientBoostingRegressor()
 clf = GridSearchCV(gbr, cv=3, param_grid=tuned_parameters,
         scoring='median_absolute_error')
