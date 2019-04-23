@@ -116,9 +116,7 @@ tuned_parameters = {
     "max_depth" : [ 4 ],
     "learning_rate": [ 0.01 ],
     "min_samples_split" : [ 1 ],
-    "loss" : [ 'ls', 'la
-    
-    d' ]
+    "loss" : [ 'ls', 'la' ]
 }
 
 n_est = 300
