@@ -134,4 +134,3 @@ clf = GridSearchCV(gbr, cv=3, param_grid=tuned_parameters,
         scoring='median_absolute_error')
 preds = clf.fit(X_train, y_train)
 best = clf.best_estimator_
-best
