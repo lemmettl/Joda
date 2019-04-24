@@ -115,12 +115,42 @@ tuned_parameters = {
     "n_estimators": [ n_est ],
     "max_depth" : [ 4 ],
     "learning_rate": [ 0.01 ],
-    "min_samples_split" : [ 1 ],
-    "loss" : [ 'ls', 'la' ]
+    "min_samples_split" : [ 1.0 ],
+    "loss" : [ 'ls', 'lad' ]
 }
 
 gbr = ensemble.GradientBoostingRegressor()
 clf = GridSearchCV(gbr, cv=3, param_grid=tuned_parameters,
-        scoring='median_absolute_error')
+        scoring='neg_median_absolute_error')
 preds = clf.fit(X_train, y_train)
 best = clf.best_estimator_
+
+abs(clf.best_score_)
+
+# plot error for each round of boosting
+test_score = np.zeros(n_est, dtype=np.float64)
+
+train_score = best.train_score_
+for i, y_pred in enumerate(best.staged_predict(X_test)):
+    test_score[i] = best.loss_(y_test, y_pred)
+
+plt.figure(figsize=(12, 6))
+plt.subplot(1, 2, 1)
+plt.plot(np.arange(n_est), train_score, 'darkblue', label='Training Set Error')
+plt.plot(np.arange(n_est), test_score, 'red', label='Test Set Error')
+plt.legend(loc='upper right')
+plt.xlabel('Boosting Iterations')
+plt.ylabel('Least Absolute Deviation')
+
+feature_importance = clf.best_estimator_.feature_importances_
+# make importances relative to max importance
+feature_importance = 100.0 * (feature_importance / feature_importance.max())
+sorted_idx = np.argsort(feature_importance)
+pos = np.arange(sorted_idx.shape[0]) + .5
+pvals = feature_importance[sorted_idx]
+pcols = X_train.columns[sorted_idx]
+plt.figure(figsize=(8,12))
+plt.barh(pos, pvals, align='center')
+plt.yticks(pos, pcols)
+plt.xlabel('Relative Importance')
+plt.title('Variable Importance')
